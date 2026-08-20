@@ -81,5 +81,6 @@ $('addHousing').onclick=()=>{R.push({type:'Rumah Teres',percent:0,density:20});e
 $('siteArea').oninput=calc;$('siteArea').onblur=e=>{const n=num(e.target.value);if(n>0)e.target.value=fmt(n,n%1?2:0)};$('siteArea').onfocus=e=>{e.target.value=String(e.target.value).replace(/,/g,'')};$('household').oninput=calc;$('pbt').onchange=calc;const mm=$('muslimMode'),mp=$('muslimPopulation'),mw=$('muslimManualWrap');if(mm){mm.onchange=()=>{mw.style.display=mm.value==='manual'?'block':'none';calc()}}if(mp){mp.oninput=calc;mp.onblur=e=>{const n=num(e.target.value);e.target.value=fmt(n)};mp.onfocus=e=>{e.target.value=String(e.target.value).replace(/,/g,'')}}editor();calc();
 })();
 </script>
+<script src="parking-engine-v2.js"></script>
 </body>
 </html>
