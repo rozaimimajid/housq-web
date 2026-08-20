@@ -1,0 +1,54 @@
+name: Add HousQ Business Section
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/add-business-section.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch index.html
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          if '05 — Keperluan Perniagaan' in s:
+              raise SystemExit(0)
+
+          s=s.replace('<a href="#community">♙ 05 Kemudahan Masyarakat</a><a href="#references">▤ 06 Rujukan Piawaian</a>', '<a href="#business">▦ 05 Keperluan Perniagaan</a><a href="#community">♙ 06 Kemudahan Masyarakat</a><a href="#references">▤ 07 Rujukan Piawaian</a>')
+
+          css='.utility-icon.motor{font-size:31px}'
+          add='.utility-icon.motor{font-size:31px}.business-section{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}.business-card{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:15px 18px;border:1px solid var(--line);border-radius:13px;background:#fff;box-shadow:0 3px 10px rgba(15,49,87,.04)}.business-title{color:var(--muted);font-size:11px;font-weight:bold}.business-value{font-size:28px;font-weight:800;margin-top:5px}.business-unit{color:var(--muted);font-size:11px}.business-note{max-width:270px;color:var(--muted);font-size:10px;line-height:1.4;text-align:right}'
+          s=s.replace(css,add,1)
+
+          needle='<div class="utility-card"><div class="utility-title">TLM</div><div id="motorParking" class="utility-value">0</div><div class="utility-note">petak motosikal</div><div class="utility-icon motor" aria-hidden="true">🏍️</div></div>\n</div></section></div>'
+          repl='<div class="utility-card"><div class="utility-title">TLM</div><div id="motorParking" class="utility-value">0</div><div class="utility-note">petak motosikal</div><div class="utility-icon motor" aria-hidden="true">🏍️</div></div>\n</div><div class="business-section" id="business"><h2 class="section-title">05 — Keperluan Perniagaan</h2><div class="business-card"><div><div class="business-title">Rumah Kedai</div><div id="shopHouseCount" class="business-value">0</div><div class="business-unit">unit</div></div><div class="business-note">Bilangan maksimum berdasarkan nisbah 1 unit rumah kedai bagi setiap 20 unit rumah. Rujukan: GP001-A, Seksyen 7.5.2.</div></div></div></section></div>'
+          if needle not in s:
+              raise SystemExit('Utilities insertion point not found')
+          s=s.replace(needle,repl,1)
+
+          s=s.replace('<section class="panel" id="community" style="margin-top:14px"><h2 class="section-title">05 — Kemudahan Masyarakat</h2>', '<section class="panel" id="community" style="margin-top:14px"><h2 class="section-title">06 — Kemudahan Masyarakat</h2>')
+          s=s.replace('<section class="panel" id="references" style="margin-top:14px"><h2 class="section-title">06 — Rujukan Piawaian</h2>', '<section class="panel" id="references" style="margin-top:14px"><h2 class="section-title">07 — Rujukan Piawaian</h2>')
+
+          calc="$('sewerageArea').textContent=fmt(lrk(pe),3);$('sewerageNote').textContent=`ekar • ${fmt(pe)} PE`;$('openSpace').textContent=fmt(area*.1,2);$('parking').textContent=fmt(Math.round(park));$('motorParking').textContent=fmt(Math.round(moto));$('communityCards').innerHTML=facilityEngine(pop,muslimPop).map(facilityHTML).join('')}"
+          calc2="$('sewerageArea').textContent=fmt(lrk(pe),3);$('sewerageNote').textContent=`ekar • ${fmt(pe)} PE`;$('openSpace').textContent=fmt(area*.1,2);$('parking').textContent=fmt(Math.round(park));$('motorParking').textContent=fmt(Math.round(moto));$('shopHouseCount').textContent=fmt(Math.floor(units/20));$('communityCards').innerHTML=facilityEngine(pop,muslimPop).map(facilityHTML).join('')}"
+          if calc not in s:
+              raise SystemExit('Calculation insertion point not found')
+          s=s.replace(calc,calc2,1)
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git diff --cached --quiet || git commit -m 'Add Section 05 business requirement'
+          git push
