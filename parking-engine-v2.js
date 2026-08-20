@@ -15,6 +15,33 @@
     'Kondominium / Pangsapuri Mewah':{tlk:2,visitor:.10,tlm:.10}
   };
   let busy=false;
+
+  function renumberSections(){
+    const nav=document.querySelector('.menu');
+    if(nav){
+      const utilitiesLink=nav.querySelector('a[href="#utilities"]');
+      const businessLink=nav.querySelector('a[href="#business"]');
+      const communityLink=nav.querySelector('a[href="#community"]');
+      const referencesLink=nav.querySelector('a[href="#references"]');
+      if(utilitiesLink) utilitiesLink.textContent='ϟ 04 Keperluan Utiliti';
+      if(!nav.querySelector('a[href="#parkingBreakdown"]') && businessLink){
+        const parkingLink=document.createElement('a');
+        parkingLink.href='#parkingBreakdown';
+        parkingLink.textContent='▣ 05 Pengiraan Parkir';
+        nav.insertBefore(parkingLink,businessLink);
+      }
+      if(businessLink) businessLink.textContent='▦ 06 Keperluan Perniagaan';
+      if(communityLink) communityLink.textContent='♙ 07 Kemudahan Masyarakat';
+      if(referencesLink) referencesLink.textContent='▤ 08 Rujukan Piawaian';
+    }
+    const businessTitle=document.querySelector('#business .section-title');
+    const communityTitle=document.querySelector('#community .section-title');
+    const referencesTitle=document.querySelector('#references .section-title');
+    if(businessTitle) businessTitle.textContent='06 — Keperluan Perniagaan';
+    if(communityTitle) communityTitle.textContent='07 — Kemudahan Masyarakat';
+    if(referencesTitle) referencesTitle.textContent='08 — Rujukan Piawaian';
+  }
+
   function ensureUI(){
     const version=document.querySelector('.version');
     if(version && !version.textContent.includes('Parking Calculation Engine v2.0')) version.textContent+=' • Parking Calculation Engine v2.0';
@@ -33,9 +60,10 @@
       const wrap=document.createElement('div');
       wrap.id='parkingBreakdown';
       wrap.style.cssText='margin-top:16px;padding-top:14px;border-top:1px solid #dce3ea';
-      wrap.innerHTML=`<h3 style="margin:0 0 9px;font-size:13px;color:#0d3157">Pecahan Keperluan TLK & TLM</h3><div class="table-wrapper"><table style="min-width:760px"><thead><tr><th>Komponen</th><th>Unit</th><th>Tingkat</th><th>TLK Asas/Penghuni</th><th>TLK Pelawat</th><th>Jumlah TLK</th><th>TLM</th></tr></thead><tbody id="parkingBreakdownBody"></tbody><tfoot><tr><td><strong>JUMLAH</strong></td><td>—</td><td>—</td><td id="pkBaseTotal">0</td><td id="pkVisitorTotal">0</td><td id="pkTLKTotal"><strong>0</strong></td><td id="pkTLMTotal"><strong>0</strong></td></tr></tfoot></table></div><div class="note" style="margin-top:8px"><strong>Parking Calculation Engine v2.0:</strong> Kediaman menggunakan kadar GP011-A Jadual 19 / ms.72. Rumah Kedai menggunakan GP011-A Perdagangan / ms.73: 1 TLK/46.4 m² ruang lantai, 1 TLM/84 m² ruang lantai dan tambahan 10% TLK untuk pelawat.</div>`;
+      wrap.innerHTML=`<h3 class="section-title" style="margin:0 0 10px">05 — Pengiraan Parkir</h3><div style="font-size:12px;font-weight:bold;color:#0d3157;margin:0 0 9px">Pecahan Keperluan TLK & TLM</div><div class="table-wrapper" style="background:#fff"><table style="min-width:760px;background:#fff"><thead><tr><th>Komponen</th><th>Unit</th><th>Tingkat</th><th>TLK Asas/Penghuni</th><th>TLK Pelawat</th><th>Jumlah TLK</th><th>TLM</th></tr></thead><tbody id="parkingBreakdownBody" style="background:#fff"></tbody><tfoot style="background:#fff"><tr style="background:#fff"><td><strong>JUMLAH</strong></td><td>—</td><td>—</td><td id="pkBaseTotal">0</td><td id="pkVisitorTotal">0</td><td id="pkTLKTotal"><strong>0</strong></td><td id="pkTLMTotal"><strong>0</strong></td></tr></tfoot></table></div><div class="note" style="margin-top:8px"><strong>Parking Calculation Engine v2.0:</strong> Kediaman menggunakan kadar GP011-A Jadual 19 / ms.72. Rumah Kedai menggunakan GP011-A Perdagangan / ms.73: 1 TLK/46.4 m² ruang lantai, 1 TLM/84 m² ruang lantai dan tambahan 10% TLK untuk pelawat.</div>`;
       utilities.insertAdjacentElement('afterend',wrap);
     }
+    renumberSections();
   }
   function parseHousing(){
     return [...document.querySelectorAll('#housingTable tr')].map(tr=>{
@@ -54,7 +82,7 @@
       const r=RATES[x.type]; if(!r)return;
       const base=Math.ceil(x.units*r.tlk),visitor=Math.ceil(x.units*r.visitor),tlm=Math.ceil(x.units*r.tlm);
       baseTotal+=base; visitorTotal+=visitor; tlmTotal+=tlm;
-      out.push(`<tr><td><strong>${x.type}</strong></td><td>${fmt(x.units)}</td><td>${x.floors?fmt(x.floors):'—'}</td><td>${fmt(base)}</td><td>${fmt(visitor)}</td><td><strong>${fmt(base+visitor)}</strong></td><td>${fmt(tlm)}</td></tr>`);
+      out.push(`<tr style="background:#fff"><td style="background:#fff"><strong>${x.type}</strong></td><td style="background:#fff">${fmt(x.units)}</td><td style="background:#fff">${x.floors?fmt(x.floors):'—'}</td><td style="background:#fff">${fmt(base)}</td><td style="background:#fff">${fmt(visitor)}</td><td style="background:#fff"><strong>${fmt(base+visitor)}</strong></td><td style="background:#fff">${fmt(tlm)}</td></tr>`);
     });
     const shopCount=Number(($('shopHouseCount')?.textContent||'0').replace(/,/g,''))||0;
     const shopFloors=Math.max(1,Number($('shopHouseFloors')?.value)||2);
@@ -64,11 +92,12 @@
     const shopVisitor=shopCount>0?Math.ceil(shopBase*.10):0;
     const shopTLM=shopCount>0?Math.ceil(shopGFA/84):0;
     baseTotal+=shopBase; visitorTotal+=shopVisitor; tlmTotal+=shopTLM;
-    out.push(`<tr><td><strong>Rumah Kedai</strong><span class="source-text">GFA ${fmt(shopGFA)} m²</span></td><td>${fmt(shopCount)}</td><td>${fmt(shopFloors)}</td><td>${fmt(shopBase)}</td><td>${fmt(shopVisitor)}</td><td><strong>${fmt(shopBase+shopVisitor)}</strong></td><td>${fmt(shopTLM)}</td></tr>`);
+    out.push(`<tr style="background:#fff"><td style="background:#fff"><strong>Rumah Kedai</strong><span class="source-text">GFA ${fmt(shopGFA)} m²</span></td><td style="background:#fff">${fmt(shopCount)}</td><td style="background:#fff">${fmt(shopFloors)}</td><td style="background:#fff">${fmt(shopBase)}</td><td style="background:#fff">${fmt(shopVisitor)}</td><td style="background:#fff"><strong>${fmt(shopBase+shopVisitor)}</strong></td><td style="background:#fff">${fmt(shopTLM)}</td></tr>`);
     body.innerHTML=out.join('');
     const grand=baseTotal+visitorTotal;
     $('pkBaseTotal').textContent=fmt(baseTotal); $('pkVisitorTotal').textContent=fmt(visitorTotal);
     $('pkTLKTotal').innerHTML=`<strong>${fmt(grand)}</strong>`; $('pkTLMTotal').innerHTML=`<strong>${fmt(tlmTotal)}</strong>`;
+    document.querySelectorAll('#parkingBreakdown tbody td,#parkingBreakdown tfoot td').forEach(td=>td.style.background='#fff');
     if($('parking')) $('parking').textContent=fmt(grand); if($('motorParking')) $('motorParking').textContent=fmt(tlmTotal);
     const pNote=$('parking')?.parentElement?.querySelector('.utility-note'); if(pNote)pNote.textContent='petak kediaman + rumah kedai';
     const mNote=$('motorParking')?.parentElement?.querySelector('.utility-note'); if(mNote)mNote.textContent='petak kediaman + rumah kedai';
