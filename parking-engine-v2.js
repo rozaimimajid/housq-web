@@ -16,10 +16,17 @@ function calculate(){if(busy)return;busy=true;ensureUI();updateDetentionPond();c
 function schedule(){requestAnimationFrame(calculate)}document.addEventListener('DOMContentLoaded',()=>{applyProjectDefaults();ensureUI();calculate();const h=$('housingTable'),s=$('shopHouseCount');if(h)new MutationObserver(()=>{inlineHousingEditor();boldHousingTotals();schedule()}).observe(h,{childList:true,subtree:true,characterData:true});if(s)new MutationObserver(schedule).observe(s,{childList:true,subtree:true,characterData:true});document.addEventListener('input',e=>{if(e.target.matches('.pct-input,.density-input,#siteArea,#household,#shopHouseFloors,#shopHouseFloorArea'))schedule()});document.addEventListener('change',e=>{if(e.target.matches('#pbt,[data-t],.hq-inline-type'))schedule()});window.addEventListener('resize',reflowLayout)});
 })();
 (()=>{if(!document.querySelector('script[src="developable-land-engine-v1.js"]')){const s=document.createElement('script');s.src='developable-land-engine-v1.js';document.head.appendChild(s)}})();
-/* Hous-Q community category display labels */
+/* Hous-Q community category display labels + facility icons */
 (()=>{
 const labels={Kesihatan:'Kemudahan Kesihatan',Keselamatan:'Kemudahan Keselamatan',Komuniti:'Kemudahan Komuniti',Pendidikan:'Kemudahan Pendidikan',Keagamaan:'Kemudahan Keagamaan'};
-function applyCommunityLabels(){document.querySelectorAll('#community .community-type').forEach(el=>{const key=el.textContent.trim();if(labels[key])el.textContent=labels[key]})}
-function init(){applyCommunityLabels();const target=document.getElementById('communityCards')||document.getElementById('community');if(target)new MutationObserver(applyCommunityLabels).observe(target,{childList:true,subtree:true})}
+const icons={
+'Kemudahan Kesihatan':'🏥',
+'Kemudahan Keselamatan':'👮',
+'Kemudahan Komuniti':'🏛️',
+'Kemudahan Pendidikan':'🏫',
+'Kemudahan Keagamaan':'🕌'
+};
+function applyCommunityEnhancements(){document.querySelectorAll('#community .community-card').forEach(card=>{const type=card.querySelector('.community-type');if(!type)return;const key=type.textContent.trim();if(labels[key])type.textContent=labels[key];const label=type.textContent.trim();let icon=card.querySelector('.hq-facility-icon');if(!icon){icon=document.createElement('div');icon.className='hq-facility-icon';icon.setAttribute('aria-hidden','true');card.appendChild(icon)}icon.textContent=icons[label]||'🏢';icon.style.cssText='position:absolute;right:16px;top:15px;width:58px;height:58px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:#eef7ff;border:1px solid #c9e2fa;font-size:35px;line-height:1;box-shadow:0 3px 10px rgba(15,49,87,.07);';type.style.paddingRight='72px';const result=card.querySelector('.community-result');if(result)result.style.paddingRight='72px'})}
+function init(){applyCommunityEnhancements();const target=document.getElementById('communityCards')||document.getElementById('community');if(target)new MutationObserver(applyCommunityEnhancements).observe(target,{childList:true,subtree:true})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
