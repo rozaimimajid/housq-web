@@ -31,3 +31,5 @@ function enhanceBusinessCard(){const card=document.querySelector('#business .bus
 function init(){enhanceBusinessCard();const business=document.getElementById('business');if(business)new MutationObserver(m=>{for(const x of m){if([...x.addedNodes].some(n=>n.nodeType===1)){enhanceBusinessCard();break}}}).observe(business,{childList:true,subtree:true})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
+/* Load Education Facility Engine v1.1 */
+(()=>{if(!document.querySelector('script[src="education-facility-engine-v1.1.js"]')){const s=document.createElement('script');s.src='education-facility-engine-v1.1.js';document.head.appendChild(s)}})();
