@@ -33,3 +33,5 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 })();
 /* Load Education Facility Engine v1.1 */
 (()=>{if(!document.querySelector('script[src="education-facility-engine-v1.1.js"]')){const s=document.createElement('script');s.src='education-facility-engine-v1.1.js';document.head.appendChild(s)}})();
+/* Load Religious Facility Engine v1.1 */
+(()=>{if(!document.querySelector('script[src="religious-facility-engine-v1.1.js"]')){const s=document.createElement('script');s.src='religious-facility-engine-v1.1.js';document.head.appendChild(s)}})();
