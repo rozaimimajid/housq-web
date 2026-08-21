@@ -16,11 +16,13 @@ function enhance(){if(busy)return;const card=findEducationCard();if(!card)return
  const hasSchool=schoolName&&!/^Tidak perlu disediakan$/i.test(schoolName);
  const schoolItems=hasSchool?parseSchoolItems(schoolName).map(splitFacility):[];
  const names=[];const counts=[];
- if(tadika>0){names.push('Prasekolah / Tadika');counts.push(`Prasekolah / Tadika: ${fmt(tadika)} unit`)}
- schoolItems.forEach(x=>{names.push(x.name);if(x.count!==null)counts.push(`${x.name}: ${fmt(x.count)} unit`)});
- result.innerHTML=names.length?names.map(n=>`<span style="display:block;text-align:left;line-height:1.35;">${n}</span>`).join(''):'Tidak perlu disediakan';
+ if(tadika>0){names.push('Prasekolah / Tadika');counts.push({name:'Prasekolah / Tadika',count:tadika})}
+ schoolItems.forEach(x=>{names.push(x.name);if(x.count!==null)counts.push({name:x.name,count:x.count})});
+ result.innerHTML=names.length?names.map(n=>`<span style="display:block;text-align:left;line-height:1.35;color:#0d3157;font-weight:800;">${n}</span>`).join(''):'Tidak perlu disediakan';
  result.style.cssText+='text-align:left;line-height:1.35;';
- rows[0].innerHTML=counts.length?counts.map(x=>`<span style="display:block;text-align:right;white-space:nowrap;line-height:1.45;">${x}</span>`).join(''):'0';
+ rows[0].innerHTML=counts.length?counts.map((x,i)=>`<span style="display:flex;justify-content:space-between;gap:8px;text-align:left;line-height:1.5;color:${i===0?'#0d3157':'#172234'};font-weight:800;"><span>${x.name}</span><span style="white-space:nowrap;">${fmt(x.count)} unit</span></span>`).join(''):'0';
+ rows[0].style.cssText='display:block;width:100%;color:#172234;font-weight:800;';
+ const bilanganRow=rows[0].closest('.facility-row');if(bilanganRow){bilanganRow.style.alignItems='flex-start';bilanganRow.style.color='#172234'}
  rows[1].textContent=tadika>0?`Tadika: Rujuk GP027${hasSchool?' | '+schoolArea:''}`:(hasSchool?schoolArea:'—');
  rows[2].textContent=tadika>0?`Tadika: Rujuk GP027${hasSchool?' | '+schoolTotal:''}`:(hasSchool?schoolTotal:'—');
  if(note)note.textContent=tadika>0?'Education Facility Engine v1.1: Tadika dicetuskan mulai 200 unit kediaman, pada kadar 1 tadika bagi setiap blok lengkap 200 unit. Prasekolah KPM boleh diintegrasikan dalam Sekolah Rendah; tadika/prasekolah berasingan tertakluk GP027 dan pengesahan PBT.':'Education Facility Engine v1.1: Tadika tidak dicetuskan bagi projek di bawah 200 unit kediaman. Keperluan sekolah lain kekal mengikut tadahan penduduk dan rujukan GP004-A 2022.';
