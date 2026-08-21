@@ -16,3 +16,10 @@ function calculate(){if(busy)return;busy=true;ensureUI();updateDetentionPond();c
 function schedule(){requestAnimationFrame(calculate)}document.addEventListener('DOMContentLoaded',()=>{applyProjectDefaults();ensureUI();calculate();const h=$('housingTable'),s=$('shopHouseCount');if(h)new MutationObserver(()=>{inlineHousingEditor();boldHousingTotals();schedule()}).observe(h,{childList:true,subtree:true,characterData:true});if(s)new MutationObserver(schedule).observe(s,{childList:true,subtree:true,characterData:true});document.addEventListener('input',e=>{if(e.target.matches('.pct-input,.density-input,#siteArea,#household,#shopHouseFloors,#shopHouseFloorArea'))schedule()});document.addEventListener('change',e=>{if(e.target.matches('#pbt,[data-t],.hq-inline-type'))schedule()});window.addEventListener('resize',reflowLayout)});
 })();
 (()=>{if(!document.querySelector('script[src="developable-land-engine-v1.js"]')){const s=document.createElement('script');s.src='developable-land-engine-v1.js';document.head.appendChild(s)}})();
+/* Hous-Q community category display labels */
+(()=>{
+const labels={Kesihatan:'Kemudahan Kesihatan',Keselamatan:'Kemudahan Keselamatan',Komuniti:'Kemudahan Komuniti',Pendidikan:'Kemudahan Pendidikan',Keagamaan:'Kemudahan Keagamaan'};
+function applyCommunityLabels(){document.querySelectorAll('#community .community-type').forEach(el=>{const key=el.textContent.trim();if(labels[key])el.textContent=labels[key]})}
+function init(){applyCommunityLabels();const target=document.getElementById('communityCards')||document.getElementById('community');if(target)new MutationObserver(applyCommunityLabels).observe(target,{childList:true,subtree:true})}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
