@@ -25,3 +25,9 @@ function applyCommunityEnhancements(){document.querySelectorAll('#community .com
 function init(){applyCommunityEnhancements();const target=document.getElementById('communityCards');if(target)new MutationObserver(mutations=>{let needs=false;for(const m of mutations){for(const n of m.addedNodes){if(n.nodeType===1&&(n.classList?.contains('community-card')||n.querySelector?.('.community-card'))){needs=true;break}}if(needs)break}if(needs)applyCommunityEnhancements()}).observe(target,{childList:true,subtree:true})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
+/* Hous-Q business card shop icon */
+(()=>{
+function enhanceBusinessCard(){const card=document.querySelector('#business .business-card');if(!card||card.querySelector('.hq-business-icon'))return;const left=card.firstElementChild;if(!left)return;const wrap=document.createElement('div');wrap.style.cssText='display:flex;align-items:center;gap:12px;min-width:0;flex:1';const icon=document.createElement('div');icon.className='hq-business-icon';icon.setAttribute('aria-hidden','true');icon.textContent='🏪';icon.style.cssText='flex:0 0 48px;width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:#eef7ff;border:1px solid #c9e2fa;font-size:31px;line-height:1;box-shadow:0 3px 10px rgba(15,49,87,.07)';left.parentNode.insertBefore(wrap,left);wrap.appendChild(icon);wrap.appendChild(left)}
+function init(){enhanceBusinessCard();const business=document.getElementById('business');if(business)new MutationObserver(m=>{for(const x of m){if([...x.addedNodes].some(n=>n.nodeType===1)){enhanceBusinessCard();break}}}).observe(business,{childList:true,subtree:true})}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
