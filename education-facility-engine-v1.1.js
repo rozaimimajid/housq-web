@@ -34,3 +34,5 @@ function schedule(){requestAnimationFrame(()=>requestAnimationFrame(enhance))}
 function init(){schedule();const target=$('communityCards');if(target)new MutationObserver(m=>{if(busy)return;const replaced=m.some(x=>[...x.addedNodes].some(n=>n.nodeType===1&&n.classList?.contains('community-card')));if(replaced)schedule()}).observe(target,{childList:true});['totalUnits','housingTable'].forEach(id=>{const e=$(id);if(e)new MutationObserver(schedule).observe(e,{childList:true,subtree:true,characterData:true})})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
+/* Load Health Facility Display v1.1 */
+(()=>{if(!document.querySelector('script[src="health-facility-display-v1.1.js"]')){const s=document.createElement('script');s.src='health-facility-display-v1.1.js';document.head.appendChild(s)}})();
