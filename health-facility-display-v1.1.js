@@ -15,7 +15,8 @@ function enhance(){if(busy)return;const card=findHealthCard();if(!card)return;co
  } else {const old=card.querySelector('.hq-health-type-row');if(old)old.remove()}
  const type=card.querySelector('.community-type');if(type&&type.textContent.trim()==='Kesihatan')type.textContent='Kemudahan Kesihatan';busy=false;
 }
-function schedule(){requestAnimationFrame(()=>requestAnimationFrame(enhance))}
-function init(){schedule();const target=document.getElementById('communityCards');if(target)new MutationObserver(m=>{if(busy)return;if(m.some(x=>[...x.addedNodes].some(n=>n.nodeType===1&&n.classList?.contains('community-card'))))schedule()}).observe(target,{childList:true});}
+function renameWaterReserve(){document.querySelectorAll('#utilities .utility-title').forEach(el=>{if(el.textContent.trim()==='Rezab Air')el.textContent='Rizab Tangki Air'})}
+function schedule(){requestAnimationFrame(()=>requestAnimationFrame(()=>{enhance();renameWaterReserve()}))}
+function init(){renameWaterReserve();schedule();const target=document.getElementById('communityCards');if(target)new MutationObserver(m=>{if(busy)return;if(m.some(x=>[...x.addedNodes].some(n=>n.nodeType===1&&n.classList?.contains('community-card'))))schedule()}).observe(target,{childList:true});}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
